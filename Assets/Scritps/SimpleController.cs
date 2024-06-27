@@ -8,6 +8,15 @@ public class SimpleController : MonoBehaviour
     public float speed = 10f;
     public float rotateSpeed = 15f;
 
+
+    public Transform firePoint;
+    public GameObject fireProjectile;
+    public float fireForce = 250f;
+    public float fireDelay = .3f;
+    float lastFire = 0f;
+
+    bool fire;
+
     public Transform visual;
 
 
@@ -31,6 +40,22 @@ public class SimpleController : MonoBehaviour
     void OnJump()
     {
         Jump();
+    }
+
+    void OnFire(InputValue value)
+    {
+        fire = value.isPressed;
+    }
+
+
+    private void Update()
+    {
+        if(fire && Time.time > lastFire)
+        {
+            lastFire = Time.time + fireDelay;
+            GameObject projectile = Instantiate(fireProjectile, firePoint.position, Quaternion.LookRotation(firePoint.forward));
+            projectile.GetComponent<Rigidbody>().AddForce(firePoint.forward * fireForce, ForceMode.Impulse);
+        }
     }
 
     void FixedUpdate()
